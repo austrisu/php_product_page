@@ -1,0 +1,23 @@
+.main-fields div{
+  /* padding: 100px; */
+  margin-bottom: 30px;
+}
+
+.main-fields div *{
+  /* padding: 100px; */
+  margin-right: 10px;
+}
+
+.type-form{
+  border: 1px solid black;
+  background-color: lightgray;
+  margin-top: 30px;
+  padding: 10px;
+
+}
+
+.type-form div{
+
+  margin-bottom: 30px;
+
+}

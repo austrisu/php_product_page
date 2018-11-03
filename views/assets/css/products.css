@@ -1,0 +1,36 @@
+.products{
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-around;
+  margin: auto;
+}
+
+.product-container{
+  margin-bottom: 20px;
+  border: 1px solid black;
+  width: 22%;
+  padding: 5px;
+}
+
+.product-container p{
+  text-align: center;
+}
+
+
+@media only screen and (max-width: 700px) {
+  .product-container{
+    width: 30%;
+  }
+}
+
+@media only screen and (max-width: 391px) {
+  .product-container{
+    width: 40%;
+  }
+}
+
+@media only screen and (max-width: 300px) {
+  .product-container{
+    width: 70%;
+  }
+}
