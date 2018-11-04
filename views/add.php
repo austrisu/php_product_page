@@ -23,9 +23,12 @@
               </div>
 
               <div class="rigth">
-                      <button id="submit" onclick="save()" class="button" type="button" name="apply"> Save </button>
+                        <button id="submit" onclick="save()" class="button" type="button" name="apply"> Save </button>
               </div>
             </nav>
+
+          <form id="add-form" class="add-form" action="/add" method="post">
+
 
 
             <div class="main-fields">
@@ -47,16 +50,18 @@
 
             <div class="type-switch">
               <label for="switch">Type switch </label>
-              <select id="switch" onchange = "displayForm()">
-                                          <option value="type_dvd">DVD-disc</option>
-                                          <option value="type_book">Book</option>
-                                          <option value="type_furniture">Furniture</option>
+              <select id="switch" onchange = "displayForm()" form="add-form" name="product-type">
+                            <option value="type_dvd">DVD-disc</option>
+                            <option value="type_book">Book</option>
+                            <option value="type_furniture">Furniture</option>
               </select>
             </div>
 
             <div class="type-form">
 
             </div>
+
+    </form>
 
     </div> <!-- end of container -->
 
@@ -79,10 +84,10 @@
                     typeForm.innerHTML = inputForm("size");
                     break;
                 case "type_book":
-                    typeForm.innerHTML = inputForm("Weigth");
+                    typeForm.innerHTML = inputForm("weigth");
                     break;
                 case "type_furniture":
-                    typeForm.innerHTML = inputForm("height") + inputForm("Width") + inputForm("Length");
+                    typeForm.innerHTML = inputForm("height") + inputForm("width") + inputForm("length");
                     break;
                 default:
                     console.log("smthing wrong");

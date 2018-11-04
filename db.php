@@ -13,102 +13,62 @@ class db
     $this->mysql = $val;
   }
 
-    //gets any field from any table
-    public function get_field_from_table($field, $table)
-    {
-      $query_string = "SELECT ". $field ." FROM ". $table .";";
-      // echo $query_string;
-      return $this->mysql->query($query_string)->fetch_all();
-    }
+  public function add_product($sku, $name, $price, $type_name, $type_params)
+  {
+    // $mysql->query('INSERT INTO products (sku, product_name, product_price, product_type_name) VALUES ("'.$sku.'", "'.$sku.'", "20.50", "DVD")')
+    $this->mysql->query('INSERT INTO products (sku, product_name, product_price, product_type_name) VALUES ("'.$sku.'", "'.$name.'", '.$price.', "'.$type_name.'")');
+    $id = $this->mysql->insert_id;
+    // $mysql->query('INSERT INTO products (sku, product_name, product_price, product_type_name) VALUES ("'.$sku.'", "'.$name.'", '.$price.', "'.$type_name.'")');
 
-    //creates nev user in DB
-    public function insert_user($user)
-    {
-      //user input data validation
-      $validated_user = $this->mysql->real_escape_string($user);
-      $query_string = 'INSERT INTO users (user_name) VALUES("'. $validated_user .'")';
+    print_r($id);
 
-      $this->mysql->query($query_string);
+    switch ( $type_name ) {
+        case "type_dvd":
+            echo "type_dvd";
 
-      //returns ID of newly created user
-      return $this->mysql->insert_id;
-    }
+            $this->mysql->query('INSERT INTO '.$type_name.' (product_id, size) VALUES ('.$id.', '.$type_params["size"].')');
 
-    //gets username
-    public function get_user_name($user_id)
-    {
-      return $this->mysql->query('SELECT user_name FROM users WHERE user_id = "'.$user_id.'";')->fetch_all();
-    }
+            break;
 
-    //gets next question
-    public function get_next_question_name($test_option, $quest_num)
-    {
-      $query_string = 'SELECT quest_name FROM questions WHERE test_id=(SELECT test_id FROM tests WHERE test_name="' . $test_option . '") AND quest_num= ' . $quest_num . ' ;';
-      return $this->mysql->query($query_string)->fetch_all();
-    }
+        case "type_book":
 
-    //gets answers for next question
-    public function get_next_question_answers($test_name, $quest_num)
-    {
-     $query_string = 'SELECT answer_name FROM answers WHERE quest_id=( SELECT quest_id FROM questions WHERE test_id=(SELECT test_id FROM tests WHERE test_name="' . $test_name . '") AND quest_num= ' . $quest_num . ' );';
-     return $this->mysql->query($query_string)->fetch_all();
-    }
+            echo "type_book";
+            $this->mysql->query('INSERT INTO '.$type_name.' (product_id, weigth) VALUES ('.$id.', '.$type_params["weigth"].')');
 
-    //gets total number of questions for progres bar and final page
-    public function total_num_of_questions($test_name)
-    {
-      $query_string = 'SELECT COUNT(quest_num) FROM questions WHERE test_id=(SELECT test_id FROM tests WHERE test_name = "' . $test_name . '");';
-      return $this->mysql->query($query_string)->fetch_all();
-    }
+            break;
 
-    //saves user answer in to DB
-    public function save_answer($user_id, $quest_num, $answer, $test_name)
-    {
-      $query_string = <<<SQL
-      INSERT INTO user_answers (`user_id`, `test_id`, `quest_id`, `answer_id`)
-      VALUES($user_id,
-             (SELECT test_id FROM tests WHERE test_name = "$test_name"),
-              (SELECT quest_id FROM questions WHERE test_id=(SELECT test_id FROM tests WHERE test_name = "$test_name") AND quest_num= $quest_num),
-             (SELECT answer_id FROM answers WHERE quest_id=(SELECT quest_id FROM questions WHERE test_id=(SELECT test_id FROM tests WHERE test_name = "$test_name") AND quest_num= $quest_num) AND answer_name= "$answer")
-            );
-SQL;
+        case "type_furniture":
 
-    $this->mysql->query($query_string);
-    }
+            echo "type_furniture";
+            print_r($type_params);
+            $query = 'INSERT INTO '.$type_name.' (product_id, height, width, length) VALUES ('.$id.', '.$type_params["height"].', '.$type_params["width"].', '.$type_params["length"].')';
+            echo $query;
+            $this->mysql->query($query);
 
-    //saves finished test date to DB
-    public function save_finished_test($user_id, $quest_num, $answer, $test_name)
-    {
+            break;
+    }//end of switch
+  }//end of add_product
 
-          $query_string = <<<SQL
-          INSERT INTO finished_tests (user_id, test_id, total_quest_num, correct_quest_num)
-          VALUE (
-            $user_id,
-            (SELECT test_id FROM tests WHERE test_name = "$test_name"),
-            $quest_num,
-            (
-              SELECT SUM(a.correct_answer)
-      				FROM answers AS a
-      				JOIN user_answers AS u
-      				ON a.answer_id=u.answer_id
-      				WHERE user_id=$user_id
-            ));
-SQL;
+// NOTE: need to be changed if vorks
+  public function add_product_json($sku, $name, $price, $type_name, $type_params)
+  {
+    $this->mysql->query('INSERT INTO products (sku, product_name, product_price, product_type_name) VALUES ("'.$sku.'", "'.$name.'", '.$price.', "'.$type_name.'")');
+    $id = $this->mysql->insert_id;
+    echo $id;
+    $temp = "INSERT INTO product_type (product_id, product_type_data) VALUES (".$id.", '".$type_params."')";
+    echo $temp;
+    $this->mysql->query($temp);
+  }
 
-          $this->mysql->query($query_string);
-          return $query_string;
 
-    }
+  public function get_product()
+  {
+    return $this->mysql->query('SELECT * FROM products')->fetch_all();
+  }
 
-    //gets number of correct aswers form final_answer table
-    public function get_num_of_correct_asvers($user_id)
-    {
-            $query_string = <<<SQL
-            SELECT correct_quest_num FROM finished_tests WHERE user_id=$user_id;
-SQL;
-            return $this->mysql->query($query_string)->fetch_all();
-    }
-}
+  }
+
+//}
 
 
  ?>
