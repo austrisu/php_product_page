@@ -2,7 +2,8 @@
 
 class router
 {
-  public $req = [];
+
+  public $req;
   public $res;
   public $url;
   public $method;

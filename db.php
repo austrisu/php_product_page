@@ -3,72 +3,67 @@
 class db
 {
 
-  //mysql object goes here
-  public $mysql;
+        //mysql object goes here
+        public $mysql;
 
 
-  //saves mysql object
-  function __construct($val)
-  {
-    $this->mysql = $val;
-  }
+        //saves mysql object
+        function __construct($val)
+        {
+          $this->mysql = $val;
+        }
 
-  public function add_product($sku, $name, $price, $type_name, $type_params)
-  {
-    // $mysql->query('INSERT INTO products (sku, product_name, product_price, product_type_name) VALUES ("'.$sku.'", "'.$sku.'", "20.50", "DVD")')
-    $this->mysql->query('INSERT INTO products (sku, product_name, product_price, product_type_name) VALUES ("'.$sku.'", "'.$name.'", '.$price.', "'.$type_name.'")');
-    $id = $this->mysql->insert_id;
-    // $mysql->query('INSERT INTO products (sku, product_name, product_price, product_type_name) VALUES ("'.$sku.'", "'.$name.'", '.$price.', "'.$type_name.'")');
+          //adds one product
+          public function add_product($sku, $name, $price, $type_name, $type_params)
+        {
 
-    print_r($id);
+              // escapes SQL sreings
+              $sku_valid = $this->mysql->real_escape_string($sku);
+              $name_valid = $this->mysql->real_escape_string($name);
+              $price_valid = $this->mysql->real_escape_string($price);
+              $type_name_valid = $this->mysql->real_escape_string($type_name);
+              $type_params_valid = $this->mysql->real_escape_string($type_params);
 
-    switch ( $type_name ) {
-        case "type_dvd":
-            echo "type_dvd";
+              $this->mysql->query('INSERT INTO products (sku, product_name, product_price, product_type_name) VALUES ("'.$sku_valid.'", "'.$name_valid.'", '.$price_valid.', "'.$type_name_valid.'")');
 
-            $this->mysql->query('INSERT INTO '.$type_name.' (product_id, size) VALUES ('.$id.', '.$type_params["size"].')');
+              //gets newly created product ID
+              $id = $this->mysql->insert_id;
 
-            break;
+              $temp = "INSERT INTO product_type (product_id, product_type_data) VALUES (".$id.", '".$type_params."')";
 
-        case "type_book":
+              $this->mysql->query($temp);
+        }
 
-            echo "type_book";
-            $this->mysql->query('INSERT INTO '.$type_name.' (product_id, weigth) VALUES ('.$id.', '.$type_params["weigth"].')');
+        //gets all products
+        public function get_products()
+        {
 
-            break;
+              $query = 'SELECT
+                          *
+                        FROM
+                          products AS p
+                        JOIN
+                          product_type AS type
+                            ON p.product_id = type.product_id;';
 
-        case "type_furniture":
+              return $this->mysql->query($query)->fetch_all();
+        }
 
-            echo "type_furniture";
-            print_r($type_params);
-            $query = 'INSERT INTO '.$type_name.' (product_id, height, width, length) VALUES ('.$id.', '.$type_params["height"].', '.$type_params["width"].', '.$type_params["length"].')';
-            echo $query;
-            $this->mysql->query($query);
+        //delates multiple rows depending on row
+        public function delete_product($product_id)
+        {
 
-            break;
-    }//end of switch
-  }//end of add_product
+                $query = 'DELETE
+                          	   products, product_type
+                          FROM
+            	                 products INNER JOIN product_type
+                	                 ON products.product_id = product_type.product_id
+                          WHERE
+            	                 products.product_id in ('.implode(" , ", $product_id).');';
 
-// NOTE: need to be changed if vorks
-  public function add_product_json($sku, $name, $price, $type_name, $type_params)
-  {
-    $this->mysql->query('INSERT INTO products (sku, product_name, product_price, product_type_name) VALUES ("'.$sku.'", "'.$name.'", '.$price.', "'.$type_name.'")');
-    $id = $this->mysql->insert_id;
-    echo $id;
-    $temp = "INSERT INTO product_type (product_id, product_type_data) VALUES (".$id.", '".$type_params."')";
-    echo $temp;
-    $this->mysql->query($temp);
-  }
-
-
-  public function get_product()
-  {
-    return $this->mysql->query('SELECT * FROM products')->fetch_all();
-  }
+                $this->mysql->query($query);
+        }
 
   }
-
-//}
-
 
  ?>

@@ -7,15 +7,13 @@ $app = new router();
 
 //connects to mysql server
 //need to be replaced accordingly to your DB configuration
-
-// NOTE:
-/* check connection */
-// if ($mysqli->connect_errno) {
-//     printf("Connect failed: %s\n", $mysqli->connect_error);
-//     exit();
-// }
-
 $mysql = new mysqli("localhost", "root", "", "store");
+
+//check DB connection
+if ($mysql->connect_errno) {
+    printf("Connect failed: %s\n", $mysqli->connect_error);
+    exit();
+}
 
 //selects encoding
 $mysql->set_charset("utf8");
@@ -30,81 +28,77 @@ $app->__set("db", $db);
 $app -> resolve($GLOBALS);
 
 //-----------------------------------------------------
-// ROOT GET route
+// ROOT GET route, displays home page
 //-----------------------------------------------------
 $app -> get("/", function ($req, $db)
 {
 
+          //gets all of the products
+          $products = $db->get_products();
+
           //returning page to display and data to display
-          return ['views/home.php', "empty"];
+          return ['views/home.php', $products];
 });
 
 //--------------------------------------------------------------
-// ADD POST route
+// ADD POST route, displays add page
 //-------------------------------------------------------------
 $app -> get("/add", function ($req, $db)
 {
-
+          //returns add page
           return ['views/add.php', "empty"];
 
 });
 
 //--------------------------------------------------------------
-// ADD post route
+// ADD post route, adds new product
 //-------------------------------------------------------------
-// $app -> post("/add", function ($req, $db)
-// {
-//
-//           //JSONify data for safe storing
-//           // var_dump($req);
-//
-//           echo "11111111111111111111111111111111111111111111!!!!!!!!!!!!!!!!!!!!!!!!!!!!";
-//
-//           // NOTE: $mysqli->error each time return if succesfuly saved data if no prints message on redirected page thet something went wrong
-//           //saves data to DB
-//           $db->add_product($req["_POST"]["sku"], $req["_POST"]["name"],$req["_POST"]["price"], $req["_POST"]["product-type"], $req["_POST"]);
-//           // print_r($req);
-//           return ['views/test.php', $req];
-//
-// });
-
 $app -> post("/add", function ($req, $db)
 {
 
-          //JSONify data for safe storing
-          // var_dump($req);
+          $type_data = [];
 
-          // echo "11111111111111111111111111111111111111111111!!!!!!!!!!!!!!!!!!!!!!!!!!!!";
-
-          $temp = [];
-
-          // $array = array('key1' => 'value1', 'key2' => 'value2');
-
-          // print_r($req);
           $keys = array_keys($req["_POST"]);
-          // print_r($keys);
-          // echo $keys[4];
 
+          //separates type dependent data, prints out only size, weigth or dimensions
           for($i=4; $i < count($keys); ++$i) {
-            // $key = " '".$keys[$i]."' ";
               $key = $keys[$i];
-              $temp[$key] = $req["_POST"][$key];
+              $type_data[$key] = $req["_POST"][$key];
           }
 
-          // print_r(json_encode($temp));
+          //ads product and implodes type data, if more than one item it is separated by "x"
+          $db->add_product($req["_POST"]["sku"], $req["_POST"]["name"],$req["_POST"]["price"], $req["_POST"]["product-type"], implode(" X ", $type_data));
 
-          $db->add_product_json($req["_POST"]["sku"], $req["_POST"]["name"],$req["_POST"]["price"], $req["_POST"]["product-type"], json_encode($temp));
+          //gets all prducts so that they can be displayed
+          $products = $db->get_products();
 
 
-          // NOTE: $mysqli->error each time return if succesfuly saved data if no prints message on redirected page thet something went wrong
-          //saves data to DB
-          // $db->add_product($req["_POST"]["sku"], $req["_POST"]["name"],$req["_POST"]["price"], $req["_POST"]["product-type"], $req["_POST"]);
-          // $res = $db->get_product();
-          // print_r($res);
-          // echo "!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!4567";
-          // echo json_encode($res);
+          return ['views/home.php', $products];
 
-          // print_r($req);
-          return ['views/test.php', $req];
+});
+
+//--------------------------------------------------------------
+// DELETE post route, removes selected items
+//-------------------------------------------------------------
+$app -> post("/delete", function ($req, $db)
+{
+
+            $id = [];
+
+            $keys = array_keys($req["_POST"]);
+
+            //removes key values from array making it non-asociative array
+            for($i=0; $i < count($keys); ++$i) {
+                $key = $keys[$i];
+                $id[$i] = $req["_POST"][$key];
+            }
+
+          //deletes products by passed ids
+          $db->delete_product($id);
+
+          //gets all prducts so that they can be displayed
+          $products = $db->get_products();
+
+          return ['views/home.php', $products];
 
 });

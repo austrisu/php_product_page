@@ -10,9 +10,7 @@
      <link rel="stylesheet" href="views/assets/css/navbar.css">
      <link rel="stylesheet" href="views/assets/css/button.css">
      <link rel="stylesheet" href="views/assets/css/products.css">
-     <!-- <link rel="stylesheet" href="views/assets/css/input_style.css">
-            <link rel="stylesheet" href="views/assets/css/button_style.css">
-            <link rel="stylesheet" href="views/assets/css/select_style.css"> -->
+     <link rel="stylesheet" href="views/assets/css/modal.css">
      <link href="https://fonts.googleapis.com/css?family=Roboto:400,900" rel="stylesheet">
 
 </head>
@@ -20,6 +18,8 @@
 <body>
 
      <div class="container">
+
+          <!-- **************** NAVBAR ********************* -->
 
           <nav>
                <div class="left">
@@ -37,57 +37,66 @@
                </div>
           </nav>
 
-
-          <div class="products">
+          <!-- **************** Product display part ********************* -->
+          <form id="product-form" action="/delete" method="post">
+               <div class="products">
 
 
                     <?php
-                              for ($i=0; $i < 100; $i++) {
-                                echo <<<HTML
-                                <div class="product-container">
-                                    <input type="checkbox" name="checkbox" value="">
-                                    <p>JCV 5668534</p>
-                                    <p>Acme Disc</p>
-                                    <p>100 $</p>
-                                    <p>Size: 700 MB</p>
-                                </div>
-HTML;
+                              //adds aditional strings to amin data
+                              function type_data($product)
+                              {
+                                switch ($product[4]) {
+                                  case 'type_dvd':
+                                    return "Size: ".$product[7]. " MB";
+                                    break;
+
+                                  case 'type_book':
+                                      return "Weigth: ".$product[7]." kG";
+                                    break;
+
+                                  case 'type_furniture':
+                                        return "Dimensions: ".$product[7]." cm";
+                                    break;
+
+                                  default:
+                                    return "smthing wrong";
+                                    break;
+                                }
+                              }
+
+                              for ($i=0; $i < count($this->res); $i++) {
+                              //prints product data in card
+                                echo "
+                                <div class='product-container'>
+                                    <input type='checkbox' name='check".$this->res[$i][0]."' value=".$this->res[$i][0].">
+                                    <p>".$this->res[$i][1]."</p>
+                                    <p>".$this->res[$i][2]."</p>
+                                    <p>".$this->res[$i][3]."</p>
+                                    <p>".type_data($this->res[$i])."</p>
+                                </div>";
                               }
                        ?>
-
-          </div>
-
+               </div>
+               <!-- end of products -->
+          </form>
      </div>
      <!-- end of container -->
 
-     <script type="text/javascript">
-          let submit = () => {
+     <!-- MODAL -->
+     <div id="modal" class="modal">
 
-               let dataPicker = document.querySelector(".data-picker select")
+          <!-- Modal content -->
+          <div class="modal-content">
+               <span class="close">&times;</span>
+               <h2>Error message</h2>
+               <hr>
+               <div class="error-msg"></div>
+          </div>
+     </div>
 
-               //if selected new product redirected to /add
-               if (dataPicker.value == "Add new product") {
-                    window.location.replace("/add");
-
-                    //Deletes marked products
-               } else if (dataPicker.value == "Mass delete") {
-
-                    let checkbox = document.querySelectorAll("input[type=checkbox]:checked")
-
-                    // if nothing selected cant delate anithing
-                    if (checkbox.length <= 0) {
-
-                         //shows modal
-                         console.log("need to select smthing");
-                    } else {
-                         //sends fetch request for delation vaits for aproval that data have been delated and returns success or error!!!
-                         // NOTE: page should be reloaded
-                         console.log("I vill delate selected");
-                    }
-               }
-
-          }
-     </script>
+     <script type="text/javascript" src="/views/assets/js/home.js"></script>
+     <script type="text/javascript" src="/views/assets/js/modal.js"></script>
 
 </body>
 
