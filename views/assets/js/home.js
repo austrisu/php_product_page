@@ -36,7 +36,7 @@ let error = ( msg ) => {
        let errorMsg = document.querySelector( ".error-msg" )
 
        //saves error string
-       let temp;
+       let temp = "";
 
        //iterates trougth array of errors if any
        for ( m of msg ) {

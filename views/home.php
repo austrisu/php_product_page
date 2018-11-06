@@ -70,10 +70,10 @@
                                 echo "
                                 <div class='product-container'>
                                     <input type='checkbox' name='check".$this->res[$i][0]."' value=".$this->res[$i][0].">
-                                    <p>".$this->res[$i][1]."</p>
-                                    <p>".$this->res[$i][2]."</p>
-                                    <p>".$this->res[$i][3]."</p>
-                                    <p>".type_data($this->res[$i])."</p>
+                                    <p>SKU: ".$this->res[$i][1]."</p>
+                                    <p>Name: ".$this->res[$i][2]."</p>
+                                    <p>Price: ".$this->res[$i][3]." $</p>
+                                    <p class='product_type'>".type_data($this->res[$i])."</p>
                                 </div>";
                               }
                        ?>

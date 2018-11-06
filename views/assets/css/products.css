@@ -8,9 +8,13 @@
 .product-container{
   margin-bottom: 20px;
   border: 1px solid black;
-  width: 22%;
-  padding: 5px;
-  font-size: 15px;
+  width: 30%;  /* Dispays 3 cards in row */
+  padding: 5px 5px 10px 5px;
+  font-size: 14px;
+}
+
+.product-type{
+  font-size: 1px;
 }
 
 .product-container p{
@@ -18,19 +22,33 @@
 }
 
 
-@media only screen and (max-width: 700px) {
-  .product-container{
-    width: 30%;
-  }
+select {
+  padding: 12px 20px;
+  margin: 8px 0;
+  display: inline-block;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  outline: none;
+  transition: 0.4s all;
 }
 
-@media only screen and (max-width: 391px) {
+select:hover{
+  border: 1px solid green;
+}
+
+
+/* Break to resposively change product card width according to display width */
+/* Displays two cards */
+@media only screen and (max-width: 600px) {
   .product-container{
     width: 40%;
   }
 }
 
-@media only screen and (max-width: 300px) {
+
+/* Break to resposively change product card width according to display width */
+/* Displays one cards */
+@media only screen and (max-width: 310px) {
   .product-container{
     width: 70%;
   }

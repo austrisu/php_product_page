@@ -8,13 +8,7 @@ nav{
   margin-bottom: 20px;
 }
 
-nav *{
-  /* margin-left: 5px; */
-  /* margin-right:5px; */
-}
-
 nav .rigth{
-  /* width:20%; */
   display: flex;
   flex-wrap: wrap;
   justify-content: space-between;

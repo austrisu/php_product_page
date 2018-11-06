@@ -1,23 +1,36 @@
-.main-fields div{
-  /* padding: 100px; */
-  margin-bottom: 30px;
+/* distance between main input fiellds name, sku etc. */
+.main-fields div {
+  margin-bottom: 5px;
 }
-
-.main-fields div *{
-  /* padding: 100px; */
+.main-fields div * {
   margin-right: 10px;
 }
 
-.type-form-container{
-  border: 1px solid black;
+/* style of text input fields and select */
+input[type=text], select {
+  width: 100%;
+  padding: 12px 20px;
+  margin: 8px 0;
+  display: inline-block;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  box-sizing: border-box;
+  outline: none;
+  transition: 0.4s all;
+}
+
+input[type=text]:hover , select:hover{
+  border: 1px solid green;
+}
+
+.type-form-container {
+  border-radius: 4px;
   background-color: lightgray;
   margin-top: 30px;
   padding: 10px;
-
 }
 
-.type-form div{
-
-  margin-bottom: 30px;
-
+/* distance between type fiellds width, heigth etc. */
+.type-form div {
+  margin-bottom: 5px;
 }

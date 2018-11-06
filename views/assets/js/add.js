@@ -34,7 +34,7 @@ displayForm = () => {
                      typeForm.innerHTML = inputForm( "height" ) + inputForm( "width" ) + inputForm( "length" );
 
                      //prints filling information
-                     typeFormDescription.innerHTML = "Note: Please insert numeric size of furniture dimensions in format HxWxL."
+                     typeFormDescription.innerHTML = "Note: Please insert numeric size of furniture dimensions in format HxWxL cm."
                      break;
               default:
                      console.log( "smthing went wrong" );
